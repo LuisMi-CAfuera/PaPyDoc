@@ -15,7 +15,10 @@ async def fabricar_chasis():
         await asyncio.sleep(random.random())
         await entrada_fabrica.put("chasis")
 
-
+async def fabricar_motor():
+    while True:
+        await asyncio.sleep(random.random())
+        await entrada_fabrica.put("motor")
 
 
 
