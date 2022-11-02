@@ -1,8 +1,8 @@
 import asyncio
 import logging
 import random
-
 from util import logcfg
+
 #Tarea que simula la fabricación de un juego de ruedas. Se trata de un bucle infinito en el que espera un tiempo aleatorio entre 0 y 1 segundo y envía "ruedas" a la cola entrada_fabrica
 async def fabricar_ruedas():
     while True:
@@ -34,15 +34,37 @@ async def fabrica():
             motor += 1
         if ruedas > 0 and chasis > 0 and motor > 0:
             await asyncio.sleep(random.random())
-            logging.info("Coche fabricado")
             ruedas -= 1
             chasis -= 1
             motor -= 1
+            print("Coche fabricado")
             await salida_fabrica.put("coche")
+
+
+
+#Tarea que simula un concesionario
+async def concesionario():
+    while True:
+        await asyncio.sleep(random.random())
+        await salida_fabrica.get()
+        print("Coche en concesionario")
+async  def main():
+    asyncio.create_task(fabricar_ruedas())
+    asyncio.create_task(fabricar_chasis())
+    asyncio.create_task(fabricar_motor())
+
+    asyncio.create_task(fabrica())
+    asyncio.create_task(concesionario())
+
+    await asyncio.sleep(30)
+
 
 
 if __name__ == "__main__":
 
+    entrada_fabrica = asyncio.Queue()
+    salida_fabrica = asyncio.Queue()
 
-entrada_fabrica = asyncio.Queue()
-salida_fabrica = asyncio.Queue()
+    asyncio.run(main())
+
+
